@@ -180,6 +180,6 @@ export default function SideBar(props) {
 }
 SideBar.propTypes = {
   showSidebar: PropTypes.bool,
-  setShowSidebar: PropTypes.function,
+  setShowSidebar: PropTypes.func,
   cardData: PropTypes.array,
 };

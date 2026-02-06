@@ -41,6 +41,6 @@ const PricingOffers = ({ offersData, buyPlanForOrganization }) => {
 };
 export default PricingOffers;
 PricingOffers.propTypes = {
-    offersData: PropTypes.obj,
-    buyPlanForOrganization: PropTypes.function
+  offersData: PropTypes.object,
+  buyPlanForOrganization: PropTypes.func,
 };

@@ -4,12 +4,16 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { checkPaymentStatus } from "../redux/cashFree/cashFreeThunk";
 import { useDispatch } from "react-redux";
-import { loginOrganization } from "../redux/organization/organizationThunk";
+import {
+  login,
+  // loginOrganization
+} from "../redux/organization/organizationThunk";
 
 const Login = () => {
   const [passwordShow, setPasswordShow] = useState(false);
   const [user, setUser] = useState();
   const navigate = useNavigate();
+  // send action to redux store
   const dispatch = useDispatch();
   const urlParams = new URLSearchParams(window.location.search);
   const orderId = urlParams.get("order_id");
@@ -18,7 +22,7 @@ const Login = () => {
     if (orderId) {
       dispatch(checkPaymentStatus({ order_id: orderId }));
     }
-  }, []);
+  }, [orderId]);
 
   const {
     register,
@@ -28,11 +32,21 @@ const Login = () => {
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
-  const onSubmit = (data) => {
-    dispatch(loginOrganization({ data, onLoginOrganization }));
-  };
-  const onLoginOrganization = () => {
-    navigate("/");
+  // const onSubmit = (data) => {
+  //   // dispatch(loginOrganization({ data, onLoginOrganization }));
+  //    dispatch(login({ data, onLoginOrganization }));
+  // };
+  // const onLoginOrganization = () => {
+  //   navigate("/");
+  // };
+  const onSubmit = async (data) => {
+    // login({ data })
+    // Creates a Redux thunk action Wraps your input inside { data }
+    const resultAction = await dispatch(login({ data }));
+    console.log('ResultAction:',resultAction.payload);
+    if (login.fulfilled.match(resultAction)) {
+      navigate("/");
+    }
   };
   return (
     <div className="h-screen flex">

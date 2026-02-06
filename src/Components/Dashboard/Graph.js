@@ -31,6 +31,46 @@ const Graph = () => {
       name: "Closed",
       value: 58,
     },
+    {
+      name: "Total Tasks",
+      value: 200,
+    },
+    {
+      name: "New Tasks",
+      value: 90,
+    },
+    {
+      name: "Active Tasks",
+      value: 50,
+    },
+    {
+      name: "Testing",
+      value: 80,
+    },
+    {
+      name: "Closed",
+      value: 58,
+    },
+    {
+      name: "Total Tasks",
+      value: 200,
+    },
+    {
+      name: "New Tasks",
+      value: 90,
+    },
+    {
+      name: "Active Tasks",
+      value: 50,
+    },
+    {
+      name: "Testing",
+      value: 80,
+    },
+    {
+      name: "Closed",
+      value: 58,
+    },
   ];
   return (
     <>

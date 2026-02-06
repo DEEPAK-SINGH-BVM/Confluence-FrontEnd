@@ -7,7 +7,8 @@ function AuthToken () {
     return false;
 }
 export default function request (data) {
-    const endpoint = 'http://localhost:3000/dev/graphql';
+    // const endpoint = 'http://localhost:3000/dev/graphql';
+     const endpoint = "http://localhost:8800/graphql";
     const headers = {
         'content-type': 'application/json'
     };
@@ -16,16 +17,16 @@ export default function request (data) {
     }
     const graphqlQuery = {
         operationName: data.operationName,
-        query: data.query,
+        query: data.query,  
         variables: data.variables
     };
-
+    console.log('GraphQuery:',graphqlQuery);
     const response = axios({
         url: endpoint,
         method: 'post',
         headers,
         data: graphqlQuery
     });
-
+    console.log('Response:',response);
     return response;
 }

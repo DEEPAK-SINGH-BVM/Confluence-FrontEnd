@@ -11,11 +11,11 @@ const initialState = {
           status: "Requested",
           people: [
             {
-              name: "noness",
+              name: "PersonA",
               url: "https://res.cloudinary.com/dn0gbcq6x/image/upload/v1678097465/ja2lg74ud8p5xlraomiz.png",
             },
             {
-              name: "none222",
+              name: "PersonB",
               url: "http://res.cloudinary.com/dn0gbcq6x/image/upload/v1678097719/vcw5kjubw5gowhttblaq.png",
             },
           ],
@@ -29,7 +29,7 @@ const initialState = {
           status: "Requested",
           people: [
             {
-              name: "none123",
+              name: "PersonC",
               url: "http://res.cloudinary.com/dn0gbcq6x/image/upload/v1678097719/vcw5kjubw5gowhttblaq.png",
             },
           ],

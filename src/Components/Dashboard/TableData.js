@@ -17,8 +17,8 @@ const TableData = () => {
   ]);
   return (
     <>
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-100 dark:text-gray-400 bg-blue-500">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-white">
+        <thead className="text-xs text-gray-100 dark:text-white bg-blue-500">
           <tr>
             <th scope="col" className="px-6 py-3">
               Members

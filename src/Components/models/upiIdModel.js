@@ -87,6 +87,6 @@ export default function UpiIdModel ({ opens, setOpens }) {
     );
 }
 UpiIdModel.propTypes = {
-    opens: PropTypes.bool,
-    setOpens: PropTypes.func
+  opens: PropTypes.bool,
+  setOpens: PropTypes.func,
 };

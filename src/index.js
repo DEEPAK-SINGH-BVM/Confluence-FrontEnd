@@ -11,7 +11,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { store } from './redux/store';
 import { Provider } from 'react-redux';
 
-const httpLink = createHttpLink({ uri: 'http://localhost:3000/dev/graphql' });
+// const httpLink = createHttpLink({ uri: 'http://localhost:3000/dev/graphql' });
+
+const httpLink = createHttpLink({ uri: "http://localhost:8800/graphql" });
+
 
 const authLink = setContext((_, { headers }) => {
     const token = localStorage.getItem('token');

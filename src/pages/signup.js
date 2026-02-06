@@ -5,7 +5,9 @@ import * as Yup from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { createOrganization } from '../redux/organization/organizationThunk';
+import { 
+    // createOrganization,
+     signup } from '../redux/organization/organizationThunk';
 
 export default function SignUp () {
     const [passwordShow, setPasswordShow] = useState(false);
@@ -33,13 +35,21 @@ export default function SignUp () {
     });
     const formOptions = { resolver: yupResolver(formSchema) };
     const { register, reset, handleSubmit, formState: { errors } } = useForm(formOptions);
+    // const onSubmit = async (data) => {
+    //     // await dispatch(createOrganization({ data, onCreateOrganization }));
+    //     await dispatch(signup({ data, onCreateOrganization }));
+    // };
+    // const onCreateOrganization = () => {
+    //     reset();
+    //     navigate('/plan');
+    // };
     const onSubmit = async (data) => {
-        await dispatch(createOrganization({ data, onCreateOrganization }));
-    };
-    const onCreateOrganization = () => {
-        reset();
-        navigate('/plan');
-    };
+        const resultAction = await dispatch(signup({ data }));
+        if (signup.fulfilled.match(resultAction)) {
+            reset();
+            navigate('/plan');
+        }
+    }
     return (
         <>
             <div className="h-screen flex">

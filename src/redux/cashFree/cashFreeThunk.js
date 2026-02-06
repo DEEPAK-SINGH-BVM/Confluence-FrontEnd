@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit'; // pending, fulfilled, rejected
 import { checkOrderStatus, createOrderForOrganization, orderPayUrl } from '../../query/cashFreeUpiQuery';
 import request from '../../request';
 
