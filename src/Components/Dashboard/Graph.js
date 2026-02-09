@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import {
   LineChart,
   Line,
@@ -10,68 +11,58 @@ import {
 } from "recharts";
 
 const Graph = () => {
+//   const data = [
+//     {
+//       name: "Total Tasks",
+//       value: 20,
+//     },
+//     {
+//       name: "New Tasks",
+//       value: 4,
+//     },
+//     {
+//       name: "Active Tasks",
+//       value: 6,
+//     },
+//     {
+//       name: "Testing",
+//       value: 8,
+//     },
+//     {
+//       name: "Closed",
+//       value: 2,
+//     },
+//   ];
+  const task = useSelector((state) => state.task.tasks);
+  console.log("graph-taskkk:", task);
+
+  const totalTasks = Object.values(task).reduce((total, column) => {
+    total += column.items.length;
+    console.log("column:", column);
+    console.log("total:", total);
+    return total;
+  }, 0);
+  console.log("graph-totalTasks:", totalTasks);
+
+  const newTasks = task.requested.items.length;
+  console.log("graph-newTask-requested", newTasks);
+  const activeTasks = task.toDo.items.length;
+  console.log("graph-activeTasks-todo", activeTasks);
+
+  const testingTasks = task.inProgress.items.length;
+  console.log("graph-inProgress-testing", testingTasks);
+
+  const closedTasks = task.done.items.length;
+  console.log("graph-done-closed", closedTasks);
+
   const data = [
-    {
-      name: "Total Tasks",
-      value: 200,
-    },
-    {
-      name: "New Tasks",
-      value: 90,
-    },
-    {
-      name: "Active Tasks",
-      value: 50,
-    },
-    {
-      name: "Testing",
-      value: 80,
-    },
-    {
-      name: "Closed",
-      value: 58,
-    },
-    {
-      name: "Total Tasks",
-      value: 200,
-    },
-    {
-      name: "New Tasks",
-      value: 90,
-    },
-    {
-      name: "Active Tasks",
-      value: 50,
-    },
-    {
-      name: "Testing",
-      value: 80,
-    },
-    {
-      name: "Closed",
-      value: 58,
-    },
-    {
-      name: "Total Tasks",
-      value: 200,
-    },
-    {
-      name: "New Tasks",
-      value: 90,
-    },
-    {
-      name: "Active Tasks",
-      value: 50,
-    },
-    {
-      name: "Testing",
-      value: 80,
-    },
-    {
-      name: "Closed",
-      value: 58,
-    },
-  ];
+    {name:"Total Tasks", value: totalTasks },
+    {name:"New Tasks",value:newTasks},
+    {name:"Active Tasks",value:activeTasks},
+    {name:"Testing",value:testingTasks},
+    {name:"Closed",value:closedTasks}
+  ]
+  console.log("Graph-Data",data);
   return (
     <>
       <div className="ml-8 mb-4">
@@ -83,7 +74,7 @@ const Graph = () => {
           <YAxis />
           <Tooltip />
           <Legend verticalAlign={"top"} />
-          <Line type="monotone" dataKey="value" stroke="#8884d8" />
+          <Line type="linear" dataKey="value" stroke="#8884d8" />
         </LineChart>
       </ResponsiveContainer>
     </>

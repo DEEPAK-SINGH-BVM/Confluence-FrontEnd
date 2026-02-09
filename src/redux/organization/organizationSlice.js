@@ -14,40 +14,51 @@ export const organizationSlice = createSlice({
     },
     extraReducers: (builder) => {   
         builder
-            .addCase(signup.fulfilled, (state, action) => {
-                if (action.payload) {
-                    localStorage.setItem('createdUser', JSON.stringify(action.payload));
-                    toast.success('Organization created successfully');
-                }
-                // if (action.payload?.data.errors?.length && action.payload?.data?.errors[0]?.message) {
-                //     toast.error(action.payload?.data?.errors[0]?.message);
-                // }
-            })
-            .addCase(signup.rejected, (state, action) => {
-                if (action.payload?.message) {
-                    toast.error(action.payload?.message);
-                }
-            })
-            .addCase(login.fulfilled, (state, action) => {
-                if (action.payload) {
-                    localStorage.clear();
-                    localStorage.setItem('user', JSON.stringify(action.payload));
-                    localStorage.setItem('token', action.payload.token);
-                    toast.success('Login successfully');
-                }
-                // if (action.payload?.data.errors?.length && action.payload?.data?.errors[0]?.message) {
-                //     toast.error(action.payload?.data?.errors[0]?.message);
-                // }
-            })
-            .addCase(login.rejected, (state, action) => {
-                if (action.payload?.message) {
-                    toast.error(action.payload.message);
-                }
-            });
+          .addCase(signup.pending, (state) => {
+            state.loading = true;
+          })
+          .addCase(signup.fulfilled, (state, action) => {
+            state.loading = false;
+            if (action.payload) {
+              localStorage.setItem(
+                "createdUser",
+                JSON.stringify(action.payload),
+              );
+              toast.success("Organization created successfully");
+            }
+          })
+          .addCase(signup.rejected, (state, action) => {
+            state.loading = false;
+            if (action.payload?.message) {
+              toast.error(action.payload?.message);
+            }
+          })
+          .addCase(login.pending, (state) => {
+            state.loading = true;
+          })
+          .addCase(login.fulfilled, (state, action) => {
+            state.loading = false
+            if (action.payload) {
+              localStorage.clear();
+              localStorage.setItem("user", JSON.stringify(action.payload));
+              localStorage.setItem("token", action.payload.token);
+              toast.success("Login successfully");
+            }
+          })
+          .addCase(login.rejected, (state, action) => {
+            state.loading = false
+            if (action.payload?.message) {
+              toast.error(action.payload.message);
+            }
+          });
     }
 });
 export const { addUser } = organizationSlice.actions;
 export default organizationSlice.reducer;
+// Local frontend state only → use reducers (like your current canbanTasks).
+// Async backend connection → use extraReducers + builder to handle the API results.
+// Builder:chainable API it makes easy to define multiple cases for async actions (pending, fulfilled, rejected) 
+// without writing separate switch statements .
 //
 // / export const organizationSlice = createSlice({
 //   name: 'user',

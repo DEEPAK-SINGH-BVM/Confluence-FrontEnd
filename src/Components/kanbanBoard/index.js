@@ -6,12 +6,13 @@ import { editTask } from "../../redux/canban/canbanSlice";
 
 function CanBanBoard() {
   const taskStatus = useSelector((state) => state.task.tasks);
+  console.log("taskStatus:",taskStatus)
   const [columns, setColumns] = useState(taskStatus);
+  console.log("columns:",columns);
   const [cardData, setCardData] = useState();
+  console.log("cardData:",cardData);
   const [showSidebar, setShowSidebar] = useState(false);
   const dispatch = useDispatch();
-
-  useEffect(() => {}, [columns]);
 
   const handleSidebar = (item) => {
     setShowSidebar(true);
@@ -43,6 +44,13 @@ function CanBanBoard() {
           ...destColumn,
           items: destItems,
         },
+        
+      });
+      console.log("Moved between columns", 
+        {
+        removed,
+        sourceColumn,
+        destColumn,
       });
     } else {
       const column = columns[source.droppableId];
@@ -135,6 +143,11 @@ function CanBanBoard() {
                                                   </h2>
                                                 </div>
                                                 <div className="flex flex-wrap">
+                                                  <img
+                                                    src={item.image}
+                                                    className="w-7 mr-2 rounded-full"
+                                                    alt="Avatar"
+                                                  />
                                                   {item?.people?.map(
                                                     (items, i) => {
                                                       return (
@@ -142,11 +155,6 @@ function CanBanBoard() {
                                                           className={`flex items-center justify-start mt-1  ${i && "ml-2"}`}
                                                           key={i}
                                                         >
-                                                          <img
-                                                            src={items.url}
-                                                            className="w-5 mr-2 rounded-full"
-                                                            alt="Avatar"
-                                                          />
                                                           <span className="text-gray-900 ">
                                                             {items.name}
                                                           </span>

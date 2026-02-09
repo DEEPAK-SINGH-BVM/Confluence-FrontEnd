@@ -1,51 +1,85 @@
-import React, { useState } from "react";
+
 import { CgGoogleTasks } from "react-icons/cg";
 import { RiChatNewFill } from "react-icons/ri";
 import { GrTest } from "react-icons/gr";
 import { AiOutlineCheck, AiOutlineCloseCircle } from "react-icons/ai";
+import { useSelector } from "react-redux";
 
 const TaskStatusBar = () => {
-  const [taskData] = useState([
-    {
-      title: "Total tasks",
-      value: "200",
-      color: "red",
-      icon: <CgGoogleTasks size="1.5rem" />,
-    },
-    {
-      title: "New tasks",
-      value: "50",
-      color: "blue",
-      icon: <RiChatNewFill size="1.5rem" />,
-    },
-    {
-      title: "Active tasks",
-      value: "50",
-      color: "green",
-      icon: <AiOutlineCheck size="1.5rem" />,
-    },
-    {
-      title: "Testing",
-      value: "50",
-      color: "orange",
-      icon: <GrTest size="1.5rem" />,
-    },
-    {
-      title: "Closed",
-      value: "50",
-      color: "gray",
-      icon: <AiOutlineCloseCircle size="1.5rem" />,
-    },
-  ]);
+  // const [taskData] = useState([
+  //   {
+  //     title: "Total tasks",
+  //     value: "20",
+  //     color: "red",
+  //     icon: <CgGoogleTasks size="1.5rem" />,
+  //   },
+  //   {
+  //     title: "New tasks",
+  //     value: "4",
+  //     color: "blue",
+  //     icon: <RiChatNewFill size="1.5rem" />,
+  //   },
+  //   {
+  //     title: "Active tasks",
+  //     value: "6",
+  //     color: "green",
+  //     icon: <AiOutlineCheck size="1.5rem" />,
+  //   },
+  //   {
+  //     title: "Testing",
+  //     value: "8",
+  //     color: "orange",
+  //     icon: <GrTest size="1.5rem" />,
+  //   },
+  //   {
+  //     title: "Closed",
+  //     value: "2 ",
+  //     color: "gray",
+  //     icon: <AiOutlineCloseCircle size="1.5rem" />,
+  //   },
+  // ]);
+  const task = useSelector((state) => state.task.tasks);
+  console.log("taskkk:", task);
+
+  const totalTasks = Object.values(task).reduce((total, column) => {
+    total +=column.items.length
+    console.log("column:", column);
+    console.log("total:", total); 
+    return total;
+  },0);
+  console.log("totalTasks:", totalTasks);
+
+  const newTasks = task.requested.items.length;
+  console.log('newTask-requested',newTasks);
+  const activeTasks = task.toDo.items.length
+  console.log('activeTasks-todo',activeTasks);
+
+  const testingTasks = task.inProgress.items.length
+  console.log('inProgress-testing',testingTasks);
+
+  const closedTasks = task.done.items.length
+  console.log('done-closed',closedTasks);  
+
+  const taskData = [
+    { title: "Total tasks", value: totalTasks,  icon: <CgGoogleTasks size="1.5rem" /> },
+    { title: "New tasks", value: newTasks,icon: <RiChatNewFill size="1.5rem" /> },
+    { title: "Active tasks", value: activeTasks, icon: <AiOutlineCheck size="1.5rem" /> },
+    { title: "Testing", value: testingTasks,icon: <GrTest size="1.5rem" /> },
+    { title: "Closed", value: closedTasks,icon: <AiOutlineCloseCircle size="1.5rem" /> },
+  ];
+
   return (
-    <>
+    <div>
+      <div className="m-5 ">
+        <p>Task Status Bar</p>
+      </div>
       <div className="flex flex-wrap mt-5 justify-between">
         {taskData.map((ele, index) => (
           <div
             className="mt-4 w-full lg:w-2/12 xl:w-4/20 px-5 mb-4"
             key={index}
           >
-            <div className="relative flex flex-col min-w-0 break-words rounded mb-3 xl:mb-0 shadow-2xl">
+            <div className="relative flex flex-col min-w-0 break-words rounded mb-3 xl:mb-0 shadow-md">
               <div className="flex-auto p-4">
                 <div className="flex flex-wrap">
                   <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
@@ -58,7 +92,7 @@ const TaskStatusBar = () => {
                   </div>
                   <div className="relative w-auto pl-4 flex-initial">
                     <div
-                      className={`text-black p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] rounded-full bg-${ele?.color}-500`}
+                      className={`text-black p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-[4.0px_4.0px_4.0px_rgba(0,0,0,0.08)] rounded-full `}
                     >
                       {ele.icon}
                     </div>
@@ -69,7 +103,7 @@ const TaskStatusBar = () => {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

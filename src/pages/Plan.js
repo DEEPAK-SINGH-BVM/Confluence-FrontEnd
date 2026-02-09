@@ -33,7 +33,7 @@ const Plan = () => {
             <div className="">
                 <div className="text-center font-semibold">
                     <h1 className="text-5xl">
-                        <span className="text-blue-700 tracking-wide">Flexible </span>
+                        <span className="text-blue-700 tracking-wide">Flexible</span>
                         <span>Plans</span>
                     </h1>
                     <p className="pt-6 text-xl text-gray-400 font-normal w-full px-8 md:w-full">
