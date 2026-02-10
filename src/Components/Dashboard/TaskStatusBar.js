@@ -51,21 +51,41 @@ const TaskStatusBar = () => {
 
   const newTasks = task.requested.items.length;
   console.log('newTask-requested',newTasks);
-  const activeTasks = task.toDo.items.length
+  const activeTasks = task.todo.items.length
   console.log('activeTasks-todo',activeTasks);
 
-  const testingTasks = task.inProgress.items.length
+  const testingTasks = task.inprogress.items.length
   console.log('inProgress-testing',testingTasks);
 
   const closedTasks = task.done.items.length
   console.log('done-closed',closedTasks);  
 
   const taskData = [
-    { title: "Total tasks", value: totalTasks,  icon: <CgGoogleTasks size="1.5rem" /> },
-    { title: "New tasks", value: newTasks,icon: <RiChatNewFill size="1.5rem" /> },
-    { title: "Active tasks", value: activeTasks, icon: <AiOutlineCheck size="1.5rem" /> },
-    { title: "Testing", value: testingTasks,icon: <GrTest size="1.5rem" /> },
-    { title: "Closed", value: closedTasks,icon: <AiOutlineCloseCircle size="1.5rem" /> },
+    {
+      title: "Total tasks",
+      value: totalTasks,
+      icon: <CgGoogleTasks size="1.5rem" />,
+    },
+    {
+      title: "Requested",
+      value: newTasks,
+      icon: <RiChatNewFill size="1.5rem" />,
+    },
+    {
+      title: "To-Do",
+      value: activeTasks,
+      icon: <AiOutlineCheck size="1.5rem" />,
+    },
+    {
+      title: "In Progress",
+      value: testingTasks,
+      icon: <GrTest size="1.5rem" />,
+    },
+    {
+      title: "Done",
+      value: closedTasks,
+      icon: <AiOutlineCloseCircle size="1.5rem" />,
+    },
   ];
 
   return (

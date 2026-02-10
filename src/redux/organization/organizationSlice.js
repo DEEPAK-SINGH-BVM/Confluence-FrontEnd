@@ -9,9 +9,7 @@ const initialState = {
 export const organizationSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {
 
-    },
     extraReducers: (builder) => {   
         builder
           .addCase(signup.pending, (state) => {

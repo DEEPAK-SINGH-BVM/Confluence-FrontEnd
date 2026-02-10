@@ -46,10 +46,10 @@ const Graph = () => {
 
   const newTasks = task.requested.items.length;
   console.log("graph-newTask-requested", newTasks);
-  const activeTasks = task.toDo.items.length;
+  const activeTasks = task.todo.items.length;
   console.log("graph-activeTasks-todo", activeTasks);
 
-  const testingTasks = task.inProgress.items.length;
+  const testingTasks = task.inprogress.items.length;
   console.log("graph-inProgress-testing", testingTasks);
 
   const closedTasks = task.done.items.length;
@@ -57,10 +57,10 @@ const Graph = () => {
 
   const data = [
     {name:"Total Tasks", value: totalTasks },
-    {name:"New Tasks",value:newTasks},
-    {name:"Active Tasks",value:activeTasks},
-    {name:"Testing",value:testingTasks},
-    {name:"Closed",value:closedTasks}
+    {name:"Requested",value:newTasks},
+    {name:"To-Do",value:activeTasks},
+    {name:"In Progress",value:testingTasks},
+    {name:"Done",value:closedTasks}
   ]
   console.log("Graph-Data",data);
   return (

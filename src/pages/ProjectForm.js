@@ -1,7 +1,7 @@
 import React, { useState} from "react";
 import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { addTask } from "../redux/canban/canbanSlice";
+import { createCanbanTask } from "../redux/canban/canbanThunk";
 
 const ProjectForm = () => {
   const dispatch = useDispatch();
@@ -17,30 +17,31 @@ const ProjectForm = () => {
   const [image, setImage] = useState(null); 
   console.log('image',image);
   
+ const handleSubmit = (e) => {
+  e.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!title) return;
+  if (!title) return;
 
-    const newTask = {
-      id: uuidv4(),
-      title,
-      status,
-      people: assignee ? [{ name: assignee }] : [],
-      date: new Date().toLocaleDateString(),
-      description,
-      image: image ? URL.createObjectURL(image) : null,
-    };
-    console.log('newTask',newTask);
-    dispatch(addTask({ status, task: newTask }));
-
-    // reset form
-    setTitle("");
-    setDescription("");
-    setAssignee("");
-    setStatus("requested");
-    setImage(null);
+  const taskPayload = {
+    title: title,    
+    description: description || "", 
+    status: status, 
+    assignedTo: assignee || ""
   };
+
+  console.log("Submitting taskPayload:", taskPayload);
+
+  // Dispatch the thunk
+  dispatch(createCanbanTask(taskPayload));
+
+  // Reset form
+  setTitle("");
+  setDescription("");
+  setAssignee("");
+  setStatus("requested");
+  setImage(null);
+};
+
 
   return (
     <div className="flex justify-center mt-10">
@@ -64,7 +65,7 @@ const ProjectForm = () => {
           className="border p-2 rounded"
         />
 
-        <input
+        <input  
           type="text"
           placeholder="Assignee name (optional)"
           value={assignee}
@@ -72,12 +73,12 @@ const ProjectForm = () => {
           className="border p-2 rounded"
         />
 
-        <input
+        {/* <input
           type="file"
           accept="image/*"
           onChange={(e) => setImage(e.target.files[0])} 
           className="border p-2 rounded"
-        />
+        /> */}
 
         <select
           value={status}
@@ -85,8 +86,8 @@ const ProjectForm = () => {
           className="border p-2 rounded"
         >
           <option value="requested">Requested</option>
-          <option value="toDo">To Do</option>
-          <option value="inProgress">In Progress</option>
+          <option value="todo">To Do</option>
+          <option value="inprogress">In Progress</option>
           <option value="done">Done</option>
         </select>
 
