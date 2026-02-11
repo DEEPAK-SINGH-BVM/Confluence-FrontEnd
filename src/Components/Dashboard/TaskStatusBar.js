@@ -87,14 +87,18 @@ const TaskStatusBar = () => {
       icon: <AiOutlineCloseCircle size="1.5rem" />,
     },
   ];
-
+  console.log('TaskDatas:',taskData);
+  
   return (
     <div>
       <div className="m-5 ">
         <p>Task Status Bar</p>
       </div>
       <div className="flex flex-wrap mt-5 justify-between">
-        {taskData.map((ele, index) => (
+        {taskData.map((ele, index) =>{
+          console.log('DATAELE',ele);
+          
+          return (
           <div
             className="mt-4 w-full lg:w-2/12 xl:w-4/20 px-5 mb-4"
             key={index}
@@ -120,8 +124,9 @@ const TaskStatusBar = () => {
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          </div>)
+        }
+        )}
       </div>
     </div>
   );

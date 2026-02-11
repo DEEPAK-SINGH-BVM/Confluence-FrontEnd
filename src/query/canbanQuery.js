@@ -29,7 +29,27 @@ query getCanbanTasks {
     description
     status
     assignedTo
+    reporter
+    priority
+    dueDate
+    labels
+    image
+    attachments
+    subtasks {
+      title
+      status
+    }
+    comments {
+      author
+      text
+      createdAt
+    }
+    issueType
+    project
+    sprint
+    epic
     createdAt
   }
 }
 `;
+

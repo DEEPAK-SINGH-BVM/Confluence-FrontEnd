@@ -22,7 +22,7 @@ export const orderPayUrl = `
           }
     }
 `;
-
+    
 export const checkOrderStatus = `
     mutation checkOrderStatusMutation(
         $order_id:String!
