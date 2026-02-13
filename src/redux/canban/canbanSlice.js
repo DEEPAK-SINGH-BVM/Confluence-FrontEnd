@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createCanbanTask, getCanbanTasks } from "./canbanThunk";
+import {
+  createCanbanTask,
+  createProject,
+  getCanbanProjects,
+  getCanbanTasks,
+  updateCanbanTask,
+} from "./canbanThunk";
 import { toast } from "react-toastify";
 // const initialState = {
 //   tasks: {
@@ -92,10 +98,11 @@ const initialState = {
     inprogress: { items: [] },
     done: { items: [] },
   },
+  projects: [],
   loading: false,
   error: null,
 };
-
+// initialState is the default structure and values of your Redux state before any data is added.
 export const canbanTask = createSlice({
   name: "canban",
   initialState,
@@ -116,26 +123,51 @@ export const canbanTask = createSlice({
         state.error = action.payload || "Error in Add Task";
         toast.error(state.error);
       })
+      .addCase(createProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createProject.fulfilled, (state, action) => {
+        state.loading = false;
+        const project = action.payload;
+        if (!state.projects) state.projects = [];
+        state.projects.push(project);
+        toast.success("Project created successfully");
+      })
+      .addCase(createProject.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Error in creating project";
+        toast.error(state.error);
+      })
+       .addCase(getCanbanProjects.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(getCanbanProjects.fulfilled, (state, action) => {
+      state.loading = false;
+      state.projects = action.payload;
+    })
+    .addCase(getCanbanProjects.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message || "Failed to fetch projects";
+    })
       .addCase(getCanbanTasks.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      // .addCase(getCanbanTasks.fulfilled, (state, action) => {
-      //   state.loading = false;
-      //   state.tasks = action.payload;
-      // })
       .addCase(getCanbanTasks.fulfilled, (state, action) => {
         state.loading = false;
 
         const updatedColumns = {
-          requested: { items: [] },
-          todo: { items: [] },
-          inprogress: { items: [] },
-          done: { items: [] },
+          requested: { name: "Requested", items: [] },
+          todo: { name: "To Do", items: [] },
+          inprogress: { name: "In Progress", items: [] },
+          done: { name: "Done", items: [] },
         };
-
+        console.log("Action Payload:", action.payload);
         action.payload.forEach((task) => {
           const status = task.status?.toLowerCase() || "requested";
+          console.log("statusgetCanban", status);
 
           if (!updatedColumns[status]) updatedColumns[status] = { items: [] };
 
@@ -143,11 +175,39 @@ export const canbanTask = createSlice({
         });
 
         state.tasks = updatedColumns;
+        console.log("stateTask", state.tasks);
       })
 
       .addCase(getCanbanTasks.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Error in Fetching Tasks";
+      })
+
+      .addCase(updateCanbanTask.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateCanbanTask.fulfilled, (state, action) => {
+        state.loading = false;
+
+        const updateTask = action.payload;
+        console.log("updateTask", updateTask);
+
+        Object.keys(state.tasks).forEach((status) => {
+          if (state.tasks[status].items) {
+            state.tasks[status].items = state.tasks[status].items.filter(
+              (task) => task.id !== updateTask.id,
+            );
+          }
+        });
+        if (!state.tasks[updateTask.status]) {
+          state.tasks[updateTask.status] = { items: [] };
+        }
+        state.tasks[updateTask.status].items.push(updateTask);
+      })
+      .addCase(updateCanbanTask.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Error in Update Task";
       });
   },
 });

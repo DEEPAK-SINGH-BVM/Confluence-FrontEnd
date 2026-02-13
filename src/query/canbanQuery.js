@@ -21,6 +21,45 @@ mutation createTask(
 }
 `;
 
+export const updateCanbanMutation = ` 
+  mutation updateTask(
+    $id : ID!,
+    $status: Status!
+  ){
+    updateCanbanTask(
+      id: $id
+      status: $status
+    ){
+      id
+      title
+      description
+      status
+      assignedTo
+      reporter
+      priority
+      dueDate
+      labels
+      comments {
+        author
+        text
+        createdAt
+      }
+      attachments
+      subtasks {
+        title
+        status
+      }
+      image
+      createdAt
+      issueType
+      project
+      sprint
+      epic
+    }  
+  }
+`;
+
+
 export const getCanbanTasksQuery = `
 query getCanbanTasks {
   getCanbanTask {
@@ -53,3 +92,21 @@ query getCanbanTasks {
 }
 `;
 
+export const createProjectMutation = `
+mutation createProject($title: String!) {
+  createProject(title: $title) {
+    id    
+    title
+    createdAt
+  }
+}
+`;
+
+export const getProjectsQuery = `
+  query getProjects {
+    getProjects {
+      id
+      title
+    }
+  }
+`;

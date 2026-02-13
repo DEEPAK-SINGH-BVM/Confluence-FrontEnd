@@ -2,17 +2,69 @@ import React, { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import SideBar from "./sideBar";
 import { useDispatch, useSelector } from "react-redux";
-import { getCanbanTasks } from "../../redux/canban/canbanThunk";
+import {
+  getCanbanTasks,
+  updateCanbanTask,
+} from "../../redux/canban/canbanThunk";
 
 function CanBanBoard() {
   const dispatch = useDispatch();
-  const tasksFromRedux = useSelector((state) => state.task.tasks);
-
-  const [columns, setColumns] = useState({});
-  console.log('COLUMN',columns);
+  const columnsFromRedux = useSelector((state) => state.task.tasks);
+  console.log("columnsFromRedux", columnsFromRedux);
   
-  const [cardData, setCardData] = useState(null);
+  const [columns, setColumns] = useState({});
+  console.log("columns", columns);
+  
+  // If you update Redux state directly during drag-and-drop, React re-renders asynchronously and
+  // the array gets appended at the end, so the moved task appears last instead of its intended index.
+
+  // useEffect(() => {
+  //   if (columnsFromRedux && Object.keys(columns).length === 0) {
+  //     setColumns(columnsFromRedux);
+  //   }
+  // }, [columnsFromRedux, columns]);
+const statusKeyMap = {
+  requested: "Requested",
+  todo: "To Do",
+  inprogress: "In Progress",
+  done: "Done",
+};
+
+  useEffect(() => {
+    if (!columnsFromRedux) {
+      return;
+    }
+
+    setColumns((prevColumns) => {
+      // console.log("Columns", columnsFromRedux);
+
+      const mergedColumns = { ...prevColumns };
+      // console.log("mergedColumns", mergedColumns);
+      
+      for (const key in columnsFromRedux) {
+        const prevItems = prevColumns[key]?.items?.length;
+        // console.log("prevItemsCanban", prevItems);
+        
+        const reduxItems = columnsFromRedux[key].items?.length;
+        // console.log("reduxItemsCanban", reduxItems);
+        
+        if (!prevItems && reduxItems) {
+          mergedColumns[key] = {...prevColumns[key],items: columnsFromRedux[key].items,};
+          // console.log("Merged column ",key);
+        }
+      }
+      if (Object.keys(prevColumns).length === 0) {
+        return columnsFromRedux;
+      }
+      return mergedColumns;
+    });
+  }, [columnsFromRedux]);
+
+  const [cardData, setCardData] = useState(null); 
+  console.log("cardData", cardData);
+
   const [showSidebar, setShowSidebar] = useState(false);
+  // console.log('showSidebar',showSidebar);
 
   // Open sidebar with task details
   const handleSidebar = (item) => {
@@ -20,88 +72,159 @@ function CanBanBoard() {
     setCardData(item);
   };
 
-  useEffect(() => {
-    const staticColumns = {
-      requested: { name: "Requested", items: [] },
-      todo: { name: "To Do", items: [] },
-      inprogress: { name: "In Progress", items: [] },
-      done: { name: "Done", items: [] },
-    };
+  // useEffect(() => {
+  //   console.log("tasksFromRedux:", tasksFromRedux);
+  //   const staticColumns = {
+  //     requested: { name: "Requested", items: [] },
+  //     todo: { name: "To Do", items: [] },
+  //     inprogress: { name: "In Progress", items: [] },
+  //     done: { name: "Done", items: [] },
+  //   };
 
-    if (!tasksFromRedux) {
-      setColumns(staticColumns);
-      return;
-    }
+  //   if (!tasksFromRedux) {
+  //     setColumns(staticColumns);
+  //     console.log("staticColumns:", staticColumns);
+  //     return;
+  //   }
 
-    let updatedColumns = { ...staticColumns };
+  //   let updatedColumns = { ...staticColumns };
 
-    const statusKeyMap = {
-      Pending: "requested",
-      Requested: "requested", 
-      ToDo: "todo", 
-      InProgress: "inprogress",
-      Done: "done", 
-    };
+  //   const statusKeyMap = {
+  //     Pending: "requested",
+  //     Requested: "requested",
+  //     ToDo: "todo",
+  //     InProgress: "inprogress",
+  //     Done: "done",
+  //   };
 
+  //   if (Array.isArray(tasksFromRedux)) {
+  //     tasksFromRedux.forEach((task) => {
+  //       console.log("Processingtask:", task);
+  //       const statusRaw = task.status?.toLowerCase() || "requested";
+  //       const key = statusKeyMap[statusRaw] || "requested";
+  //       updatedColumns[key].items.push(task);
+  //     });
+  //   } else if (typeof tasksFromRedux === "object") {
+  //     Object.keys(staticColumns).forEach((key) => {
+  //       if (tasksFromRedux[key]?.items) {
+  //         updatedColumns[key].items = tasksFromRedux[key].items;
+  //       }
+  //     });
+  //   }
 
-    if (Array.isArray(tasksFromRedux)) {
-      tasksFromRedux.forEach((task) => {
-        const statusRaw = task.status?.toLowerCase() || "requested";
-        const key = statusKeyMap[statusRaw] || "requested";
-        updatedColumns[key].items.push(task);
-      });
-    } else if (typeof tasksFromRedux === "object") {
-      Object.keys(staticColumns).forEach((key) => {
-        if (tasksFromRedux[key]?.items) {
-          updatedColumns[key].items = tasksFromRedux[key].items;
-        }
-      });
-    }
+  //   setColumns(updatedColumns);
+  //   console.log("UpdatedColumns", updatedColumns);
+  // }, [tasksFromRedux]);
 
-    setColumns(updatedColumns);
-  }, [tasksFromRedux]);
+  // // Fetch tasks from backend on mount
+  // useEffect(() => {
+  //   dispatch(getCanbanTasks());
+  // }, [dispatch]);
 
+  // // Drag & Drop handler
+  // const onDragEnd = (result) => {
+  //   if (!result.destination) return;
 
-  // Fetch tasks from backend on mount
+  //   const { source, destination } = result;
+
+  //   const sourceColumn = columns[source.droppableId];
+  //   const destColumn = columns[destination.droppableId];
+
+  //   console.log('sourceColumn',sourceColumn);
+  //   console.log("destColumn", destColumn);
+
+  //   const sourceItems = [...sourceColumn.items];
+  //   console.log("sourceItems", sourceItems);
+
+  //   const destItems =
+  //     source.droppableId === destination.droppableId
+  //       ? sourceItems
+  //       : [...destColumn.items];
+  //   console.log("destItems", destItems);
+  //   // Create a copy of the task before changing status
+  //   const [removed] = sourceItems.splice(source.index, 1);
+  //   const updatedTask = { ...removed, status: destination.droppableId };
+  //   console.log('updatedTask',updatedTask);
+
+  //   destItems.splice(destination.index, 0, updatedTask);
+
+  //   setColumns({
+  //     ...columns,
+  //     [source.droppableId]: {
+  //       ...sourceColumn,
+  //       items:
+  //         source.droppableId === destination.droppableId
+  //           ? destItems
+  //           : sourceItems,
+  //     },
+  //     [destination.droppableId]: {
+  //       ...destColumn,
+  //       items: destItems,
+  //     },
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   if (tasksFromRedux) {
+  //     setColumns(tasksFromRedux);
+  //   }
+  // }, [tasksFromRedux]);
+
   useEffect(() => {
     dispatch(getCanbanTasks());
   }, [dispatch]);
 
-  // Drag & Drop handler
   const onDragEnd = (result) => {
     if (!result.destination) return;
-
     const { source, destination } = result;
+    console.log("source", source);
+    console.log("destination", destination);
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
 
     const sourceColumn = columns[source.droppableId];
+    console.log("sourceColumn", sourceColumn);
     const destColumn = columns[destination.droppableId];
+    console.log("destColumn", destColumn);
 
     const sourceItems = [...sourceColumn.items];
+    console.log("sourceItems", sourceItems);
+
     const destItems =
       source.droppableId === destination.droppableId
         ? sourceItems
         : [...destColumn.items];
 
-    // Create a copy of the task before changing status
+    console.log("destItems", destItems);
+
     const [removed] = sourceItems.splice(source.index, 1);
-    const updatedTask = { ...removed, status: destination.droppableId };
+    console.log("removed", removed);
+
+    const updatedTask = {
+      ...removed,
+      status: destination.droppableId,
+    };
+    console.log("updatedTask", updatedTask);
 
     destItems.splice(destination.index, 0, updatedTask);
 
-    setColumns({
-      ...columns,
-      [source.droppableId]: {
-        ...sourceColumn,
-        items:
-          source.droppableId === destination.droppableId
-            ? destItems
-            : sourceItems,
-      },
-      [destination.droppableId]: {
-        ...destColumn,
-        items: destItems,
-      },
-    });
+   setColumns({
+     ...columns,
+     [source.droppableId]: { ...sourceColumn, items: sourceItems },
+     [destination.droppableId]: { ...destColumn, items: destItems },
+   });
+
+
+    dispatch(
+      updateCanbanTask({
+        id: updatedTask.id,
+        status: updatedTask.status,
+      }),
+    );
   };
 
   return (
@@ -121,14 +244,20 @@ function CanBanBoard() {
                 alignItems: "center",
               }}
             >
-              <div className="flex">
+              {/* <div className="flex">
                 <h1 className="font-medium font-black group-hover:text-indigo-400 leading-4">
                   <span className="text-indigo-400 mr-1.5 font-bold text-lg lg:text-3xl">
                     .
                   </span>
                   {column.name}
                 </h1>
+              </div> */}
+              <div className="flex items-center">
+                <h1 className="font-medium font-black group-hover:text-indigo-400 leading-4">
+                  {statusKeyMap[columnId]}
+                </h1>
               </div>
+
               <div className="w-full" style={{ margin: 8 }}>
                 <Droppable droppableId={columnId}>
                   {(provided) => (
@@ -165,7 +294,7 @@ function CanBanBoard() {
                                             {item.title}
                                           </h2>
                                         </div>
-                                        <div className="flex flex-wrap">
+                                        {/* <div className="flex flex-wrap">
                                           {item.image && (
                                             <img
                                               src={item.image}
@@ -208,7 +337,7 @@ function CanBanBoard() {
                                               {item?.comment?.length || 0}
                                             </span>
                                           </div>
-                                        </div>
+                                        </div> */}
                                       </div>
                                     </div>
                                   </div>
