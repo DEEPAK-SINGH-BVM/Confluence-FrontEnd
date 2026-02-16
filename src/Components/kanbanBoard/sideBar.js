@@ -290,7 +290,7 @@ export default function SideBar({ showSidebar, setShowSidebar, cardData }) {
         {/* Close Button */}
         <button
           onClick={() => setShowSidebar(false)}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-900 hover:bg-gray-200 p-2 rounded-full"
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-900  p-2 rounded-full"
         >
           ✕
         </button>
@@ -478,7 +478,8 @@ export default function SideBar({ showSidebar, setShowSidebar, cardData }) {
           )}
           {cardData?.project && (
             <div>
-              <strong>Project:</strong> {cardData.project}
+              <strong>Project:</strong>
+              {cardData?.project?.name || "No Project"}
             </div>
           )}
           {cardData?.sprint && (

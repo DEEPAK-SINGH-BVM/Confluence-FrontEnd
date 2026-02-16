@@ -2,11 +2,41 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createProjectMutation,
   createTaskMutation,
-  getCanbanTasksQuery,
+  getAllCanbanTasksQuery,
   getProjectsQuery,
   updateCanbanMutation,
 } from "../../query/canbanQuery";
 import request from "../../request";
+
+export const getCanbanTasks = createAsyncThunk(
+  "canban/getTasks",
+  async () => {
+    const response = await request({
+      query: getAllCanbanTasksQuery,
+      operationName: "getAllCanbanTask",
+    });
+    console.log('responsetask',response);
+    
+    return response.data.getAllCanbanTask;
+  },
+);
+
+export const getCanbanProjects = createAsyncThunk(
+  "canban/getProjects",
+  async () => {
+    const response = await request({
+      query: getProjectsQuery,
+      operationName: "getAllProjects",
+    });
+    console.log('responseProjects',response);
+    
+    // response.data now exists
+    return response.data.getAllProjects.map((p) => ({
+      id: p.id ,
+      name: p.name,
+    }));
+  },
+);
 
 export const createCanbanTask = createAsyncThunk(
   "canban/createTask",
@@ -26,38 +56,6 @@ export const createCanbanTask = createAsyncThunk(
   },
 );
 
-export const updateCanbanTask = createAsyncThunk(
-  "canban/updateTask",
-  async ({ id, status }) => {
-    try {
-      const response = await request({
-        query: updateCanbanMutation,
-        variables: { id, status },
-      });
-      console.log("responseUpdate", response);
-
-      // console.log('updateCanbanTask',response,data.data.updateCanbanTask);
-      return response.data.data.updateCanbanTask;
-    } catch (error) {
-      console.log("Error get", error);
-      throw error;
-    }
-  },
-);
-
-export const getCanbanTasks = createAsyncThunk("canban/getTasks", async () => {
-  try {
-    const response = await request({
-      query: getCanbanTasksQuery,
-    });
-    console.log("Fetched tasks:", response.data.data.getCanbanTask);
-    return response.data.data.getCanbanTask;
-  } catch (error) {
-    console.log("Error fetching tasks:", error);
-    throw error;
-  }
-});
-
 export const createProject = createAsyncThunk(
   "project/createProject",
   async (projectData) => {
@@ -75,15 +73,21 @@ export const createProject = createAsyncThunk(
   },
 );
 
-export const getCanbanProjects = createAsyncThunk(
-  "canban/getProjects",
-  async () => {
+export const updateCanbanTask = createAsyncThunk(
+  "canban/updateTask",
+  async ({ id, status }) => {
     try {
-      const response = await request({ query: getProjectsQuery });
-      return response.data.data.getProjects;
+      const response = await request({
+        query: updateCanbanMutation,
+        variables: { id, status },
+      });
+      console.log("responseUpdate", response);
+
+      return response.data.data.updateCanbanTask;
     } catch (error) {
-      console.log("Error fetching projects", error);
+      console.log("Error get", error);
       throw error;
     }
   },
 );
+

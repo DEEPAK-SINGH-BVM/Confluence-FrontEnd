@@ -52,7 +52,10 @@ export const updateCanbanMutation = `
       image
       createdAt
       issueType
-      project
+       project {
+        id
+        name
+      }
       sprint
       epic
     }  
@@ -60,53 +63,89 @@ export const updateCanbanMutation = `
 `;
 
 
-export const getCanbanTasksQuery = `
-query getCanbanTasks {
-  getCanbanTask {
-    id
-    title
-    description
-    status
-    assignedTo
-    reporter
-    priority
-    dueDate
-    labels
-    image
-    attachments
-    subtasks {
+// export const getAllCanbanTasksQuery = `
+// query getCanbanTask($projectId: ID!) {
+//   getCanbanTask(projectId: $projectId) {
+//     id
+//     title
+//     description
+//     status
+//     assignedTo
+//     reporter
+//     priority
+//     dueDate
+//     labels
+//     image
+//     attachments
+//     subtasks {
+//       title
+//       status
+//     }
+//     comments {
+//       author
+//       text
+//       createdAt
+//     }
+//     issueType
+//     project {
+//       id
+//       name
+//     }
+//     sprint
+//     epic
+//     createdAt
+//   }
+// }
+// `;
+export const getAllCanbanTasksQuery = `
+  query getAllCanbanTask {
+    getAllCanbanTask {
+      id
       title
+      description
       status
-    }
-    comments {
-      author
-      text
+      assignedTo
+      reporter
+      priority
+      dueDate
+      labels
+      image
+      attachments
+      subtasks {
+        title
+        status
+      }
+      comments {
+        author
+        text
+        createdAt
+      }
+      issueType
+      project {
+        id
+        name
+      }
+      sprint
+      epic
       createdAt
     }
-    issueType
-    project
-    sprint
-    epic
-    createdAt
   }
-}
 `;
 
 export const createProjectMutation = `
-mutation createProject($title: String!) {
-  createProject(title: $title) {
-    id    
-    title
-    createdAt
+  mutation createProject($name: String!) {
+    createProject(name: $name) {
+      id
+      name
+    }
   }
-}
 `;
 
 export const getProjectsQuery = `
-  query getProjects {
-    getProjects {
+  query getAllProjects {
+    getAllProjects {
       id
-      title
+      name
     }
   }
 `;
