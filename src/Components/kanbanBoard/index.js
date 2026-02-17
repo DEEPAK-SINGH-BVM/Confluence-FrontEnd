@@ -276,61 +276,71 @@
 //   );
 // }
 
-// export default CanBanBoard;
+import { text } from "@cloudinary/url-gen/qualifiers/source";
 import React, { useState, useRef } from "react";
 
 export default function CanBanBoard() {
   const [inputValue, setInputValue] = useState("");
+  // console.log('InputValue',inputValue);
   const [textValue, setTextValue] = useState("");
-
-  const count = useRef(0);
+  //  console.log("TextValue", textValue);
+  const [count, setCount] = useState(0); 
+  console.log('Count',count);
+  
+  // const count = useRef(0);
 
   const handleChange = (event) => {
     setInputValue(event.target.value);
     setTextValue(inputValue);
   };
+  const A = ({ user }) => {
+    console.log("A rendered", user);
+    return <div>{user.name}</div>;
+  };
 
+  const B = ({ text, onChange }) => {
+    console.log("B rendered", text);
+    return (
+      <input
+        type="text"
+        id="my-text-input"
+        value={text}
+        onChange={onChange}
+        placeholder="Type something here..."
+      />
+    );
+  };
+
+  const C = ({ text }) => {
+    console.log("C rendered", text);
+    return <div>Text: {text}</div>;
+  };
   return (
     <div>
-      <button
+      <div>
+        {/* <button
         onClick={() => {
           count.current = count.current + 1;
-          console.log(count.current);
+          // console.log(count.current);
         }}
       >
-       Increment
-      </button>
-     <div>count: {count.current}</div>
- 
-      <A user={{ name: "Alice" }} />
+        Increment
+      </button> */}
+        <button
+          onClick={() => {
+            setCount(count + 1);
+          }}
+        >
+          Increment
+        </button>
+        <div>count:{count}</div>
 
-      <B text={inputValue} onChange={handleChange} />
-    
-      <C text={textValue} />
- 
+      </div>
+        <A user={{ name: "Alice" }} />
+        <B text={inputValue} onChange={handleChange} />
+        <C text={textValue} />
     </div>
   );
 }
 
-const A = ({ user }) => {
-  console.log("A rendered", user);
-  return <div>{user.name}</div>;
-};
 
-const B = ({ text, onChange }) => {
-  console.log("B rendered", text);
-  return (
-    <input
-      type="text"
-      id="my-text-input"
-      value={text}
-      onChange={onChange}
-      placeholder="Type something here..."
-    />
-  );
-};
-
-const C = ({ text }) => {
-  console.log("C rendered", text);
-  return <div>Text: {text}</div>;
-};
