@@ -4,18 +4,51 @@ mutation createTask(
   $description: String
   $status: String!
   $assignedTo: String
+  $reporter: String
+  $priority: String
+  $dueDate: String
+  $labels: [String]
+  $subtasks: [SubtaskInput]
+  $comments: [CommentInput]
+  $issueType: IssueType
+  $project: ID!
+  $sprint: String
+  $epic: String
+  $image: String
 ) {
   createCanbanTask(
     title: $title
     description: $description
     status: $status
     assignedTo: $assignedTo
+    reporter: $reporter
+    priority: $priority
+    dueDate: $dueDate
+    labels: $labels
+    subtasks: $subtasks
+    comments: $comments
+    issueType: $issueType
+    project: $project
+    sprint: $sprint
+    epic: $epic
+    image: $image
   ) {
     id
     title
     description
     status
     assignedTo
+     reporter
+    priority
+    dueDate
+    labels
+    subtasks { title status }
+    comments { author text createdAt }
+    issueType
+    project { id name }
+    sprint
+    epic
+    image
     createdAt
   }
 }
@@ -44,7 +77,6 @@ export const updateCanbanMutation = `
         text
         createdAt
       }
-      attachments
       subtasks {
         title
         status
@@ -110,7 +142,6 @@ export const getAllCanbanTasksQuery = `
       dueDate
       labels
       image
-      attachments
       subtasks {
         title
         status

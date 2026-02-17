@@ -123,6 +123,7 @@ export const canbanTask = createSlice({
         state.error = action.payload || "Error in Add Task";
         toast.error(state.error);
       })
+      // CreateProject
       .addCase(createProject.pending, (state) => {
         state.loading = true;
         state.error = null;

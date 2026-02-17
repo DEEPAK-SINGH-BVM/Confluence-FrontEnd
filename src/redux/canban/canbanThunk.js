@@ -38,20 +38,41 @@ export const getCanbanProjects = createAsyncThunk(
   },
 );
 
+// export const createCanbanTask = createAsyncThunk(
+//   "canban/createTask",
+//   async (taskData) => {
+//     try {
+//       const response = await request({
+//         query: createTaskMutation,
+//         variables: taskData,
+//       });
+//       console.log("createCanbanTask", response);
+
+//       return response.data.createCanbanTask;
+//     } catch (error) {
+//       console.log("Error get ", error);
+//       throw error;
+//     }
+//   },
+// );
 export const createCanbanTask = createAsyncThunk(
   "canban/createTask",
-  async (taskData) => {
+  async (taskData, { rejectWithValue }) => {
     try {
       const response = await request({
         query: createTaskMutation,
         variables: taskData,
       });
-      console.log("createCanbanTask", response);
 
-      return response.data.data.createCanbanTask;
+      console.log("createCanbanTask response:", response);
+
+      if (response.errors && response.errors.length > 0) {
+        return rejectWithValue(response.errors);
+      }
+
+      return response.data.createCanbanTask;
     } catch (error) {
-      console.log("Error get ", error);
-      throw error;
+      return rejectWithValue(error.response?.data || error.message);
     }
   },
 );
@@ -59,13 +80,14 @@ export const createCanbanTask = createAsyncThunk(
 export const createProject = createAsyncThunk(
   "project/createProject",
   async (projectData) => {
+    console.log("projectData", projectData);
     try {
       const response = await request({
         query: createProjectMutation,
-        variables: projectData,
+        variables: { name: projectData.title },
       });
       console.log("createProject", response);
-      return response.data.data.createProject;
+      return response.data.createProject;
     } catch (error) {
       console.log("Error creating project:", error);
       throw error;

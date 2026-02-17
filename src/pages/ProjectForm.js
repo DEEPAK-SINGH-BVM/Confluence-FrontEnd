@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createCanbanTask } from "../redux/canban/canbanThunk";
+import { createProject } from "../redux/canban/canbanThunk";
 const ProjectForm = () => {
   const dispatch = useDispatch();
 
-  const [title, setTitle] = useState(""); // project title only
+  const [title, setTitle] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title) return;
 
-    const projectPayload = { title }; // only title sent
+    const projectPayload = { title }; 
     console.log("Submitting projectPayload:", projectPayload);
 
     // Dispatch the thunk to create project
-    dispatch(createCanbanTask(projectPayload));
+    dispatch(createProject(projectPayload));
 
     // Reset form
     setTitle("");
