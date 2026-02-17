@@ -1,235 +1,336 @@
-import { useEffect, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import SideBar from "./sideBar";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getCanbanTasks,
-  updateCanbanTask,
-} from "../../redux/canban/canbanThunk";
+// import { useEffect, useState } from "react";
+// import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+// import SideBar from "./sideBar";
+// import { useDispatch, useSelector } from "react-redux";
+// import {
+//   getCanbanTasks,
+//   updateCanbanTask,
+// } from "../../redux/canban/canbanThunk";
 
-function CanBanBoard() {
-  const dispatch = useDispatch();
-  const columnsFromRedux = useSelector((state) => state.task.tasks);
-  console.log("columnsFromRedux", columnsFromRedux);
-  
-  const [columns, setColumns] = useState({});
-  console.log("columns", columns);
-  
-  // If you update Redux state directly during drag-and-drop, React re-renders asynchronously and
-  // the array gets appended at the end, so the moved task appears last instead of its intended index.
+// function CanBanBoard() {
+//   const dispatch = useDispatch();
+//   const columnsFromRedux = useSelector((state) => state.task.tasks);
+//   console.log("columnsFromRedux", columnsFromRedux);
+//   const projects = useSelector((state) => state.task.projects);
+//   console.log("columnsFromRedux.todo.items", columnsFromRedux.todo.items);
 
-  // useEffect(() => {
-  //   if (columnsFromRedux && Object.keys(columns).length === 0) {
-  //     setColumns(columnsFromRedux);
-  //   }
-  // }, [columnsFromRedux, columns]);
+//   const [columns, setColumns] = useState({});
+//   console.log("columns", columns);
+//   const [selectedProjectId, setSelectedProjectId] = useState("");
+//   const [cardData, setCardData] = useState(null);
+//   console.log("cardData", cardData);
 
-  // useEffect(() => {
-  //   if (columnsFromRedux) {
-  //     setColumns(columnsFromRedux);
-  //   }
-  // }, [columnsFromRedux]);
+//   const [showSidebar, setShowSidebar] = useState(false);
 
-  const statusKeyMap = {
-    requested: "Requested",
-    todo: "To Do",
-    inprogress: "In Progress",
-    done: "Done",
-  };
+//   // If you update Redux state directly during drag-and-drop, React re-renders asynchronously and
+//   // the array gets appended at the end, so the moved task appears last instead of its intended index.
 
-  useEffect(() => {
-    if (!columnsFromRedux) {
-      return;
-    }
+//   // useEffect(() => {
+//   //   if (columnsFromRedux && Object.keys(columns).length === 0) {
+//   //     setColumns(columnsFromRedux);
+//   //   }
+//   // }, [columnsFromRedux, columns]);
 
-    setColumns((prevColumns) => {
-      // console.log("Columns", columnsFromRedux);
+//   // useEffect(() => {
+//   //   if (columnsFromRedux) {
+//   //     setColumns(columnsFromRedux);
+//   //   }
+//   // }, [columnsFromRedux]);
 
-      const mergedColumns = { ...prevColumns };
-      // console.log("mergedColumns", mergedColumns);
-      
-      for (const key in columnsFromRedux) {
-        const prevItems = prevColumns[key]?.items?.length;
-        // console.log("prevItemsCanban", prevItems);
-        
-        const reduxItems = columnsFromRedux[key].items?.length;
-        // console.log("reduxItemsCanban", reduxItems);
-        
-        if (!prevItems && reduxItems) {
-          mergedColumns[key] = {
-            ...prevColumns[key],
-            items: columnsFromRedux[key].items,
-          };
-          // console.log("Merged column ",key);
-        }
-      }
-      if (Object.keys(prevColumns).length === 0) {
-        return columnsFromRedux;
-      }
-      return mergedColumns;
-    });
-  }, [columnsFromRedux]);
+//   const statusKeyMap = {
+//     requested: "Requested",
+//     todo: "To Do",
+//     inprogress: "In Progress",
+//     done: "Done",
+//   };
 
-  const [cardData, setCardData] = useState(null);
-  console.log("cardData", cardData);
+//   useEffect(() => {
+//     if (!columnsFromRedux) {
+//       return;
+//     }
 
-  const [showSidebar, setShowSidebar] = useState(false);
-  // console.log('showSidebar',showSidebar);
+//     setColumns((prevColumns) => {
+//       // console.log("Columns", columnsFromRedux);
 
-  // Open sidebar with task details
-  const handleSidebar = (item) => {
-    setShowSidebar(true);
-    setCardData(item);
-  };
+//       const mergedColumns = { ...prevColumns };
+//       // console.log("mergedColumns", mergedColumns);
 
-  useEffect(() => {
-    dispatch(getCanbanTasks());
-  }, [dispatch]);
+//       for (const key in columnsFromRedux) {
+//         const prevItems = prevColumns[key]?.items?.length;
+//         // console.log("prevItemsCanban", prevItems);
 
-  const onDragEnd = (result) => {
-    if (!result.destination) return;
-    const { source, destination } = result;
-    console.log("source", source);
-    console.log("destination", destination);
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) {
-      return;
-    }
+//         const reduxItems = columnsFromRedux[key].items?.length;
+//         // console.log("reduxItemsCanban", reduxItems);
 
-    const sourceColumn = columns[source.droppableId];
-    console.log("sourceColumn", sourceColumn);
-    const destColumn = columns[destination.droppableId];
-    console.log("destColumn", destColumn);
+//         if (!prevItems && reduxItems) {
+//           mergedColumns[key] = {
+//             ...prevColumns[key],
+//             items: columnsFromRedux[key].items,
+//           };
+//           // console.log("Merged column ",key);
+//         }
+//       }
+//       if (Object.keys(prevColumns).length === 0) {
+//         return columnsFromRedux;
+//       }
+//       return mergedColumns;
+//     });
+//   }, [columnsFromRedux]);
 
-    const sourceItems = [...sourceColumn.items];
-    console.log("sourceItems", sourceItems);
+//   // console.log('showSidebar',showSidebar);
 
-    const destItems =
-      source.droppableId === destination.droppableId
-        ? sourceItems
-        : [...destColumn.items];
+//   // Open sidebar with task details
+//   const handleSidebar = (item) => {
+//     setShowSidebar(true);
+//     setCardData(item);
+//   };
 
-    console.log("destItems", destItems);
+//   useEffect(() => {
+//     dispatch(getCanbanTasks());
+//   }, [dispatch]);
 
-    const [removed] = sourceItems.splice(source.index, 1);
-    console.log("removed", removed);
+//   const onDragEnd = (result) => {
+//     if (!result.destination) return;
+//     const { source, destination } = result;
+//     console.log("source", source);
+//     console.log("destination", destination);
+//     if (
+//       source.droppableId === destination.droppableId &&
+//       source.index === destination.index
+//     ) {
+//       return;
+//     }
 
-    const updatedTask = {
-      ...removed,
-      status: destination.droppableId,
-    };
-    console.log("updatedTask", updatedTask);
+//     const sourceColumn = columns[source.droppableId];
+//     console.log("sourceColumn", sourceColumn);
+//     const destColumn = columns[destination.droppableId];
+//     console.log("destColumn", destColumn);
 
-    destItems.splice(destination.index, 0, updatedTask);
+//     const sourceItems = [...sourceColumn.items];
+//     console.log("sourceItems", sourceItems);
 
-   setColumns({
-     ...columns,
-     [source.droppableId]: { ...sourceColumn, items: sourceItems },
-     [destination.droppableId]: { ...destColumn, items: destItems },
-   });
+//     const destItems =
+//       source.droppableId === destination.droppableId
+//         ? sourceItems
+//         : [...destColumn.items];
 
+//     console.log("destItems", destItems);
 
-    dispatch(
-      updateCanbanTask({
-        id: updatedTask.id,
-        status: updatedTask.status,
-      }),
-    );
+//     const [removed] = sourceItems.splice(source.index, 1);
+//     console.log("removed", removed);
+
+//     const updatedTask = {
+//       ...removed,
+//       status: destination.droppableId,
+//     };
+//     console.log("updatedTask", updatedTask);
+
+//     destItems.splice(destination.index, 0, updatedTask);
+
+//     const newDestItems = destItems.map((item, index) => {
+//       console.log("newItems",item);
+//       console.log("newIndex", index);
+//       return {
+//         ...item,
+//         order: index,
+//       };
+//     });
+//     const newSourceItems =
+//       source.droppableId === destination.droppableId
+//         ? newDestItems
+//         : sourceItems.map((item, index) => ({
+//           ...item,
+//           order: index,
+//         }));
+//       console.log("newSourceItems", newSourceItems);
+
+//    setColumns({
+//      ...columns,
+//      [source.droppableId]: { ...sourceColumn, items: newSourceItems },
+//      [destination.droppableId]: { ...destColumn, items: newDestItems },
+//    });
+
+//     dispatch(
+//       updateCanbanTask({
+//         id: updatedTask.id,
+//         status: updatedTask.status,
+//       }),
+//     );
+//   };
+//   const filterByProject = (items) => {
+//     if (!selectedProjectId) return items;
+//     return items.filter((task) => {
+//       console.log("TaskProjectid:", task.project.id,"selectProjectId",selectedProjectId);
+//       return task.project.id === selectedProjectId;
+//     });
+//   };
+
+//   return (
+//     <div className="antialiased w-full relative">
+//        <select
+//           className="border px-3 py-2 rounded"
+//           value={selectedProjectId}
+//           onChange={(e) => setSelectedProjectId(e.target.value)}
+//         >
+//           <option value="">All Projects</option>
+//           {projects?.map((p) => (
+//             <option key={p.id} value={p.id}>
+//               {p.name}
+//             </option>
+//           ))}
+//         </select>
+//       <div
+//         className="py-4 gap-2 px-2"
+//         style={{ display: "flex", justifyContent: "center", height: "100%" }}
+//       >
+//         <DragDropContext onDragEnd={onDragEnd}>
+//            {Object.entries(columns).map(([columnId, column]) => {
+//             const filteredItems = filterByProject(column.items || []);
+//             return (
+//               <div
+//                 key={columnId}
+//                 className="w-1/4"
+//                 style={{
+//                   display: "flex",
+//                   flexDirection: "column",
+//                   alignItems: "center",
+//                 }}
+//               >
+//                 <div className="flex items-center">
+//                   <h1 className="font-medium font-black group-hover:text-indigo-400 leading-4">
+//                     {statusKeyMap[columnId]}
+//                   </h1>
+//                 </div>
+
+//                 <div className="w-full" style={{ margin: 8 }}>
+//                   <Droppable droppableId={columnId}>
+//                     {(provided) => (
+//                       <div
+//                         {...provided.droppableProps}
+//                         ref={provided.innerRef}
+//                         className="rounded-lg bg-white/10 p-4 w-full"
+//                       >
+//                         {filteredItems.map((item, index) => (
+//                           <Draggable
+//                             key={item.id}
+//                             draggableId={item.id}
+//                             index={index}
+//                           >
+//                             {(provided) => (
+//                               <div
+//                                 ref={provided.innerRef}
+//                                 {...provided.draggableProps}
+//                                 {...provided.dragHandleProps}
+//                                 onClick={() => handleSidebar(item)}
+//                                 className="w-full mb-3"
+//                                 style={{ ...provided.draggableProps.style }}
+//                                 data-drawer-target="drawer-navigation"
+//                                 data-drawer-show="drawer-navigation"
+//                                 aria-controls="drawer-navigation"
+//                               >
+//                                 <div className="group p-4 transition-all duration-300 bg-white shadow-lg lg:p-5">
+//                                   <div className="flex items-center gap-x-2">
+//                                     <div className="flex items-start">
+//                                       <div>
+//                                         <div className="flex items-center justify-between">
+//                                           <h2 className="text-lg font-semibold text-gray-900 mt-1 mb-2">
+//                                             {item.title}
+//                                           </h2>
+//                                         </div>
+//                                         {/* <p className="text-sm font-semibold text-gray-500 mt-1 mb-2">
+//                                           {item.description}
+//                                         </p>
+//                                         <p className="text-sm font-semibold text-gray-900 mt-1 mb-2">
+//                                           Status : {item.status}
+//                                         </p> */}
+//                                       </div>
+//                                     </div>
+//                                   </div>
+//                                 </div>
+//                               </div>
+//                             )}
+//                           </Draggable>
+//                         ))}
+//                         <button
+//                           className="mt-2 py-2 px-4 w-full text-black bg-gray-200 rounded"
+//                         >
+//                           + Add Task
+//                         </button>
+//                       </div>
+//                     )}
+//                   </Droppable>
+//                 </div>
+//               </div>
+//             );
+//             })}
+//         </DragDropContext>
+//       </div>
+
+//       {/* Sidebar for task details */}
+//       <SideBar
+//         showSidebar={showSidebar}
+//         setShowSidebar={setShowSidebar}
+//         cardData={cardData}
+//       />
+//     </div>
+//   );
+// }
+
+// export default CanBanBoard;
+import React, { useState, useRef } from "react";
+
+export default function CanBanBoard() {
+  const [inputValue, setInputValue] = useState("");
+  const [textValue, setTextValue] = useState("");
+
+  const count = useRef(0);
+
+  const handleChange = (event) => {
+    setInputValue(event.target.value);
+    setTextValue(inputValue);
   };
 
   return (
-    <div className="antialiased w-full relative">
-      <div
-        className="py-4 gap-2 px-2"
-        style={{ display: "flex", justifyContent: "center", height: "100%" }}
+    <div>
+      <button
+        onClick={() => {
+          count.current = count.current + 1;
+          console.log(count.current);
+        }}
       >
-        <DragDropContext onDragEnd={onDragEnd}>
-          {Object.entries(columns).map(([columnId, column]) => (
-            <div
-              key={columnId}
-              className="w-1/4"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <div className="flex items-center">
-                <h1 className="font-medium font-black group-hover:text-indigo-400 leading-4">
-                  {statusKeyMap[columnId]}
-                </h1>
-              </div>
+       Increment
+      </button>
+     <div>count: {count.current}</div>
+ 
+      <A user={{ name: "Alice" }} />
 
-              <div className="w-full" style={{ margin: 8 }}>
-                <Droppable droppableId={columnId}>
-                  {(provided) => (
-                    <div
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      className="rounded-lg bg-white/10 p-4 w-full"
-                    >
-                      {column.items &&
-                        column.items.map((item, index) => (
-                          <Draggable
-                            key={item.id}
-                            draggableId={item.id}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                onClick={() => handleSidebar(item)}
-                                className="w-full mb-3"
-                                style={{ ...provided.draggableProps.style }}
-                                data-drawer-target="drawer-navigation"
-                                data-drawer-show="drawer-navigation"
-                                aria-controls="drawer-navigation"
-                              >
-                                <div className="group p-4 transition-all duration-300 bg-white shadow-lg lg:p-5">
-                                  <div className="flex items-center gap-x-2">
-                                    <div className="flex items-start">
-                                      <div>
-                                        <div className="flex items-center justify-between">
-                                          <h2 className="text-lg font-semibold text-gray-900 mt-1 mb-2">
-                                            {item.title}
-                                          </h2>
-                                        </div>
-                                        <p className="text-sm font-semibold text-gray-500 mt-1 mb-2">
-                                          {item.description}
-                                        </p>
-                                        <p className="text-sm font-semibold text-gray-900 mt-1 mb-2">
-                                          Status : {item.status}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </div>
-            </div>
-          ))}
-        </DragDropContext>
-      </div>
-
-      {/* Sidebar for task details */}
-      <SideBar
-        showSidebar={showSidebar}
-        setShowSidebar={setShowSidebar}
-        cardData={cardData}
-      />
+      <B text={inputValue} onChange={handleChange} />
+    
+      <C text={textValue} />
+ 
     </div>
   );
 }
 
-export default CanBanBoard;
+const A = ({ user }) => {
+  console.log("A rendered", user);
+  return <div>{user.name}</div>;
+};
+
+const B = ({ text, onChange }) => {
+  console.log("B rendered", text);
+  return (
+    <input
+      type="text"
+      id="my-text-input"
+      value={text}
+      onChange={onChange}
+      placeholder="Type something here..."
+    />
+  );
+};
+
+const C = ({ text }) => {
+  console.log("C rendered", text);
+  return <div>Text: {text}</div>;
+};

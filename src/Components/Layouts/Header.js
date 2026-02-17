@@ -43,7 +43,7 @@ const Header = () => {
       setOpen(false);
     }
   };
-  const projectsFromRedux = useSelector((state) => state.task.projects);
+  // const projectsFromRedux = useSelector((state) => state.task.projects);
   const dispatch = useDispatch();
   const [selectedProject, setSelectedProject] = useState("");
   console.log("SelectProject",selectedProject);
@@ -214,7 +214,7 @@ const Header = () => {
                   <span className="text-sm font-medium">Canban Board</span>
                 </Link>
               </li>
-              {/* <li>
+              <li>
                 <Link
                   to="/projects"
                   className={` ${window.location.pathname === "projects" ? "translate-x-2 text-gray-800" : ""} flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800`}
@@ -224,15 +224,15 @@ const Header = () => {
                   </span>
                   <span className="text-sm font-medium">Add Projects</span>
                 </Link>
-              </li> */}
-              <li>
+              </li>
+              {/* <li>
                 <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400">
                   <AiFillProject />
                 </span>
                 <span className="text-sm font-medium text-gray-400">
                   Projects
                 </span>
-                {/* <select
+                <select
                   className="w-full px-2 py-2 border rounded text-sm border-gray-400"
                   value={selectedProject}
                   //   onChange={(e) => setSelectedProject(e.target.value)}
@@ -255,22 +255,9 @@ const Header = () => {
                         </option>
                       );
                     })}
-                </select> */}
-                {/* <select
-                  value={selectedProject}
-                  onChange={(e) => setSelectedProject(e.target.value)}
-                  className="w-full px-2 py-2 border rounded text-sm border-gray-400"
-                >
-                  <option value="">
-                    Select Project
-                  </option>
-                  {projectsFromRedux.map((project) => (
-                    <option key={project.id} value={project.id}>
-                      {project.name}
-                    </option>
-                  ))}
-                </select> */}
-              </li>
+                </select>
+               
+              </li> */}
             </ul>
           </div>
         </div>
