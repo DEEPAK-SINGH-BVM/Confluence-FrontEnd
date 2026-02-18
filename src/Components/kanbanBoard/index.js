@@ -242,7 +242,7 @@ function CanBanBoard() {
                                         {/* <p className="text-sm font-semibold text-gray-500 mt-1 mb-2">
                                           {item.description}
                                         </p>
-                                        
+
                                         <p className="text-sm font-semibold text-gray-900 mt-1 mb-2">
                                           Status : {item.status}
                                         </p> */}
@@ -299,57 +299,3 @@ function CanBanBoard() {
   );
 }
 export default CanBanBoard;
-
-// import React, { useState, useMemo, memo } from "react";
-
-// export default function CanBanBoard() {
-//   const [inputValue, setInputValue] = useState("");
-//   const [textValue, setTextValue] = useState("");
-//   const [count, setCount] = useState(0);
-//   const user = useMemo(() => ({ name: "Alice" }));
-
-//   const handleChange = (event) => {
-//     setInputValue(event.target.value);
-//     setTextValue(value); 
-//   };
-
-//   const A = memo(({ user }) => {
-//     console.log("A rendered", user);
-//     return <div>{user.name}</div>;
-//   });
-
-//   const B = memo(({ text, onChange }) => {
-//     console.log("B rendered", text);
-//     return (
-//       <input
-//         type="text"
-//         value={text}
-//         onChange={onChange}
-//         placeholder="Type something here..."
-//       />
-//     );
-//   });
-
-//   const C = memo(({ text }) => {
-//     console.log("C rendered", text);
-//     return <div>Text: {text}</div>;
-//   });
-
-//   return (
-//     <div>
-//       <div>
-//         <button
-//           onClick={() => {
-//             setCount(count + 1);
-//           }}
-//         >
-//           Increment
-//         </button>
-//         <div>count: {count}</div>
-//       </div>
-//       <A user={user} />
-//       <B text={inputValue} onChange={handleChange} />
-//       <C text={textValue} />
-//     </div>
-//   );
-// }
