@@ -38,8 +38,8 @@ const Graph = () => {
 
   const totalTasks = Object.values(task).reduce((total, column) => {
     total += column.items.length;
-    console.log("column:", column);
     console.log("total:", total);
+    console.log("column:", column);
     return total;
   }, 0);
   console.log("graph-totalTasks:", totalTasks);

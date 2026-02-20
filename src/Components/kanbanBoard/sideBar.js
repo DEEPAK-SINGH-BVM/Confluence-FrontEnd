@@ -234,7 +234,7 @@
 // SideBar.defaultProps = {
 //   cardData: {},
 // };
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ImSpinner3 } from "react-icons/im";
 import { CiCalendarDate } from "react-icons/ci";
 import {
@@ -246,27 +246,97 @@ import {
 } from "react-icons/md";
 import { AiOutlineUpload, AiOutlineCloudUpload } from "react-icons/ai";
 import PropTypes from "prop-types";
-
+import { addSubTask, fetchSubTask } from "../../redux/subTask/subTaskThunk";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchComments, addComment } from "../../redux/comment/commentThunk";
+// import { fetchSubTask } from "../../redux/subTask/subTaskThunk";
 export default function SideBar({ showSidebar, setShowSidebar, cardData }) {
   const [imageUrl, setImageUrl] = useState([]);
-  const fileInputRef = useRef(null);
+  const [subTask, setSubTask] = useState([]);
+  // const [comment, setComment] = useState([]);
+  const [newSubtask, setNewSubtask] = useState("");
+  const [newComment, setNewComment] = useState("");
+  //   useEffect(() => {
+  //   if (!cardData?.id) return;
 
-  const handleImageUpload = () => {
-    const files = fileInputRef.current?.files;
-    if (!files || files.length === 0) return;
+  //   // Fetch subtasks for this task ID
+  //   fetchSubtasks(cardData.id).then(setSubtasks);
 
-    const formData = new FormData();
-    formData.append("file", files[0]);
-    formData.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
+  //   // Fetch comments for this task ID
+  //   fetchComments(cardData.id).then(setComments);
+  // }, [cardData]);
+  // const fileInputRef = useRef(null);
+  console.log("All-CardData", cardData);
 
-    fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`,
-      { method: "POST", body: formData },
-    )
-      .then((res) => res.json())
-      .then((res) => setImageUrl((prev) => [...prev, res.secure_url]))
-      .catch((err) => console.error("Upload error:", err));
+  const dispatch = useDispatch();
+  const { subTasks, loading, error } = useSelector((state) => state.subTask);
+  const { comments, loading: commentLoading } = useSelector(
+    (state) => state.comment,
+  );
+  console.log('Commentsss',comments);
+  
+  useEffect(() => {
+    if (cardData?.id) {
+      console.log("Dispatching fetchSubTask for taskId:", cardData.id);
+      dispatch(fetchSubTask(cardData.id));
+      dispatch(fetchComments(cardData.id));
+    }
+  }, [cardData, dispatch]);
+
+    const handleAddComment = () => {
+    console.log("Clicked Add Subtask");
+    console.log("cardData.id:", cardData?.id);
+    console.log("newSubtask:", newSubtask);
+    if (!cardData?.id) return;
+
+    dispatch(
+      addComment({
+        taskId: cardData.id,
+        comment: {
+          authore: "User",
+          text: newComment,
+        },
+        text: newComment,
+      }),
+    );
+    setNewComment("");
   };
+  
+  const handleAddSubtask = () => {
+    console.log("Clicked Add Subtask");
+    console.log("cardData.id:", cardData?.id);
+    console.log("newSubtask:", newSubtask);
+
+    dispatch(addSubTask({ taskId: cardData.id, title: newSubtask }));
+    setNewSubtask("");
+  };
+  
+
+
+  // const dispatch = useDispatch();
+  // dispatch(fetchSubTask("6996a658e3e0f53b02dbdaff"));
+
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(fetchSubTask("69930890ec88d57c1031d024"));
+  // }, [dispatch]);
+
+  // const handleImageUpload = () => {
+  //   const files = fileInputRef.current?.files;
+  //   if (!files || files.length === 0) return;
+
+  //   const formData = new FormData();
+  //   formData.append("file", files[0]);
+  //   formData.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
+
+  //   fetch(
+  //     `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`,
+  //     { method: "POST", body: formData },
+  //   )
+  //     .then((res) => res.json())
+  //     .then((res) => setImageUrl((prev) => [...prev, res.secure_url]))
+  //     .catch((err) => console.error("Upload error:", err));
+  // };
 
   if (!showSidebar) return null;
 
@@ -380,8 +450,10 @@ export default function SideBar({ showSidebar, setShowSidebar, cardData }) {
                 </div>
               </div>
             )}
+            {/* <h1 className="bg-blue-100 w-16 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+            {cardData?.ticket || "No Title"}
+          </h1> */}
           </div>
-
           {/* Right Column */}
           <div className="space-y-4">
             {/* Description */}
@@ -396,59 +468,122 @@ export default function SideBar({ showSidebar, setShowSidebar, cardData }) {
                 className="w-full border border-gray-200 rounded-md p-2 text-gray-700 text-sm resize-none bg-white/60 backdrop-blur-sm"
               />
             </div>
-
+            {/* Add Subtask btn */}
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={newSubtask}
+                onChange={(e) => setNewSubtask(e.target.value)}
+                placeholder="New subtask title"
+                className="flex-1 border rounded px-2 py-1"
+              />
+              <button
+                onClick={handleAddSubtask}
+                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+              >
+                Add
+              </button>
+            </div>
             {/* Subtasks */}
-            {cardData?.subtasks?.length > 0 && (
-              <div className={`${sectionClass}`}>
-                <span className="flex items-center gap-2 text-gray-700 mb-2">
-                  Subtasks
-                </span>
-                <ul className="list-disc list-inside text-gray-700">
-                  {cardData.subtasks.map((subtask, idx) => (
-                    <li key={idx}>
-                      {subtask.title} - <strong>{subtask.status}</strong>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <div className={sectionClass}>
+              <span className="flex items-center gap-2 text-gray-700 mb-2">
+                <MdLabel /> Subtasks
+              </span>
 
+              {loading && <p>Loading subtasks...</p>}
+              {!loading && subTasks.length === 0 && <p>No subtasks found.</p>}
+
+              <ul
+                className="list-disc list-inside text-gray-800"
+                style={{
+                  maxHeight: "80px",
+                  overflowY: "auto",
+                }}
+              >
+                {subTasks.map((subtask) => (
+                  <li key={subtask.id} className="mb-1">
+                    <span className="font-semibold">{subtask.title}</span>
+                    {/* {subtask.status && (
+                      <span className="ml-2 text-sm text-gray-500">
+                        ({subtask.status})
+                      </span>
+                    )} */}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* Add Comment btn */}
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Comments......."
+                className="flex-1 border rounded px-2 py-1"
+              />
+              <button
+                onClick={handleAddComment}
+                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+              >
+                Add
+              </button>
+            </div>
             {/* Comments */}
-            {cardData?.comments?.length > 0 && (
-              <div className={`${sectionClass}`}>
-                <span className="flex items-center gap-2 text-gray-700 mb-2">
-                  Comments
-                </span>
-                <div className="flex flex-col gap-3 max-h-52 overflow-y-auto">
-                  {cardData.comments.map((comment, idx) => (
-                    <div key={idx} className="flex gap-3 items-start">
-                      <img
-                        src={cardData.image || "https://via.placeholder.com/40"}
-                        alt={comment.author}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <div className="bg-white/70 backdrop-blur-md p-2 rounded-md w-full shadow-sm hover:shadow-md transition-shadow">
-                        <span className="font-semibold text-sm">
-                          {comment.author}
-                        </span>
-                        <p className="text-sm">{comment.text}</p>
-                        <span className="text-xs text-gray-500">
-                          {formatDate(comment.createdAt)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className={`${sectionClass} mt-6`}>
+              <span className="flex items-center gap-2 text-gray-700 mb-2">
+                <MdNotes /> Comments
+              </span>
+              {commentLoading && <p>Loading comments...</p>}
+              {!commentLoading && comments.length === 0 && (
+                <p>No comments found.</p>
+              )}
+              <ul
+                className="list-disc list-inside text-gray-800"
+                style={{
+                  maxHeight: "150px",
+                  overflowY: "auto",
+                }}
+              >
+                {/* {(comments || []).map(({ id, authore, text, createdAt }) =>
+                  comments ? (
+                    <li key={id} className="mb-2">
+                      <p>
+                        <strong>{authore || "user"}:</strong> {text || ""}
+                      </p>
+                      {createdAt && (
+                        <small className="text-gray-500">
+                          {new Date(Number(createdAt)).toLocaleString()}
+                        </small>
+                      )}
+                    </li>
+                  ) : null,
+                )} */}
+                  {(comments || [])
+                    .map(({ id, authore, text, createdAt }) => (
+                      <li key={id || Math.random()} className="mb-2">
+                        <p>
+                          <strong>{authore || "user"}:</strong> {text || ""}
+                        </p>
+                        {createdAt && (
+                          <small className="text-gray-500">
+                            {new Date(Number(createdAt)).toLocaleString()}
+                          </small>
+                        )}
+                      </li>
+                    ))}
+              </ul>
+            </div>
           </div>
         </div>
 
         {/* Upload Section - Centered */}
         <div className="flex justify-center items-center gap-3 mt-6">
-          <input type="file" ref={fileInputRef} />
+          <input
+            type="file"
+            // ref={fileInputRef}
+          />
           <button
-            onClick={handleImageUpload}
+            // onClick={handleImageUpload}
             className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
           >
             Upload

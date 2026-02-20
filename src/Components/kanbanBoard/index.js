@@ -11,7 +11,6 @@ import CreateTaskForm from "./createTaskForm";
 function CanBanBoard() {
   const dispatch = useDispatch();
   const columnsFromRedux = useSelector((state) => state.task.tasks);
-  console.log("columnsFromRedux", columnsFromRedux);
   const projects = useSelector((state) => state.task.projects);
   console.log("columnsFromRedux.todo.items", columnsFromRedux.todo.items);
   const [showForm, setShowForm] = useState(false);
@@ -130,7 +129,7 @@ function CanBanBoard() {
     destItems.splice(destination.index, 0, updatedTask);
 
     const newDestItems = destItems.map((item, index) => {
-      console.log("newItems",item);
+      console.log("newItems", item);
       console.log("newIndex", index);
       return {
         ...item,
@@ -141,16 +140,16 @@ function CanBanBoard() {
       source.droppableId === destination.droppableId
         ? newDestItems
         : sourceItems.map((item, index) => ({
-          ...item,
-          order: index,
-        }));
-      console.log("newSourceItems", newSourceItems);
+            ...item,
+            order: index,
+          }));
+    console.log("newSourceItems", newSourceItems);
 
-   setColumns({
-     ...columns,
-     [source.droppableId]: { ...sourceColumn, items: newSourceItems },
-     [destination.droppableId]: { ...destColumn, items: newDestItems },
-   });
+    setColumns({
+      ...columns,
+      [source.droppableId]: { ...sourceColumn, items: newSourceItems },
+      [destination.droppableId]: { ...destColumn, items: newDestItems },
+    });
 
     dispatch(
       updateCanbanTask({
@@ -162,31 +161,42 @@ function CanBanBoard() {
   const filterByProject = (items) => {
     if (!selectedProjectId) return items;
     return items.filter((task) => {
-      console.log("TaskProjectid:", task.project.id,"selectProjectId",selectedProjectId);
-      return task.project.id === selectedProjectId;
+      console.log('Taskkkk',task);
+      
+      console.log(
+        "TaskProjectid:",
+        task.project.id,
+        "selectProjectId",
+        selectedProjectId,
+      );
+      return task.project?.id === selectedProjectId;
     });
   };
 
   return (
     <div className="antialiased w-full relative">
-       <select
-          className="border px-3 py-2 rounded"
-          value={selectedProjectId}
-          onChange={(e) => setSelectedProjectId(e.target.value)}
-        >
-          <option value="">All Projects</option>
-          {projects?.map((p) => (
+      <select
+        className="border px-3 py-2 rounded"
+        value={selectedProjectId}
+        onChange={(e) => setSelectedProjectId(e.target.value)}
+      >
+        <option value="">All Projects</option>
+        {projects?.map((p) => {
+          console.log('PId',p);
+          
+          return (
             <option key={p.id} value={p.id}>
               {p.name}
             </option>
-          ))}
-        </select>
+          );
+        })}
+      </select>
       <div
         className="py-4 gap-2 px-2"
         style={{ display: "flex", justifyContent: "center", height: "100%" }}
       >
         <DragDropContext onDragEnd={onDragEnd}>
-           {Object.entries(columns).map(([columnId, column]) => {
+          {Object.entries(columns).map(([columnId, column]) => {
             const filteredItems = filterByProject(column.items || []);
             return (
               <div
@@ -239,13 +249,17 @@ function CanBanBoard() {
                                             {item.title}
                                           </h2>
                                         </div>
-                                        {/* <p className="text-sm font-semibold text-gray-500 mt-1 mb-2">
+                                        <p className="text-sm font-semibold text-gray-500 mt-1 mb-2">
                                           {item.description}
                                         </p>
-
                                         <p className="text-sm font-semibold text-gray-900 mt-1 mb-2">
                                           Status : {item.status}
-                                        </p> */}
+                                        </p>
+                                        <div className="p-1 bg-blue-100 w-16 border rounded text-center">
+                                          <p className="text-sm font-semibold text-blue-900 mt-1 mb-2 ">
+                                            {item.ticket}
+                                          </p>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -285,7 +299,7 @@ function CanBanBoard() {
                 </div>
               </div>
             );
-            })}
+          })}
         </DragDropContext>
       </div>
 

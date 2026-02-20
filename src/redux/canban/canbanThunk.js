@@ -38,41 +38,20 @@ export const getCanbanProjects = createAsyncThunk(
   },
 );
 
-// export const createCanbanTask = createAsyncThunk(
-//   "canban/createTask",
-//   async (taskData) => {
-//     try {
-//       const response = await request({
-//         query: createTaskMutation,
-//         variables: taskData,
-//       });
-//       console.log("createCanbanTask", response);
-
-//       return response.data.createCanbanTask;
-//     } catch (error) {
-//       console.log("Error get ", error);
-//       throw error;
-//     }
-//   },
-// );
 export const createCanbanTask = createAsyncThunk(
   "canban/createTask",
-  async (taskData, { rejectWithValue }) => {
+  async (taskData) => {
     try {
       const response = await request({
         query: createTaskMutation,
         variables: taskData,
       });
-
-      console.log("createCanbanTask response:", response);
-
-      if (response.errors && response.errors.length > 0) {
-        return rejectWithValue(response.errors);
-      }
+      console.log("createCanbanTask", response);
 
       return response.data.createCanbanTask;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error get ", error);
+      throw error;
     }
   },
 );

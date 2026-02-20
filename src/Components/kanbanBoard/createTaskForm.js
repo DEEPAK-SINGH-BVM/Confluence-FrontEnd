@@ -17,7 +17,7 @@ export default function CreateTaskForm({ onClose }) {
   const [issueType, setIssueType] = useState("TASK");
   const [project, setProject] = useState("");
   console.log('createTaskProject',project);
-  
+  const [ticket, setTicket] = useState("");
   const [sprint, setSprint] = useState("");
   const [epic, setEpic] = useState("");
   const [labels, setLabels] = useState([]);
@@ -38,6 +38,7 @@ export default function CreateTaskForm({ onClose }) {
    const taskPayload = {
      title,
      description,
+     ticket,
      status,
      priority,
      assignedTo,
@@ -91,7 +92,6 @@ export default function CreateTaskForm({ onClose }) {
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
-            <option value="">Select Status</option>
             <option value="requested">Requested</option>
             <option value="todo">Todo</option>
             <option value="inprogress">In Progress</option>
@@ -177,7 +177,15 @@ export default function CreateTaskForm({ onClose }) {
             onChange={(e) => setEpic(e.target.value)}
           />
         </div>
-
+        <div>
+          <label className="block mb-1 font-semibold">Ticket No.</label>
+          <input
+            type="text"
+            className="w-full border px-3 py-2 rounded"
+            value={ticket}
+            onChange={(e) => setTicket(e.target.value)}
+          />
+        </div>
         <div>
           <label className="block mb-1 font-semibold">Assigned To</label>
           <input
